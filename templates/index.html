@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block head%}
-<title>Badiya Todo</title>
+<title>Task Master</title>
 {% endblock %}
 
 {% block body%}
@@ -9,27 +9,28 @@
     <h1 class="title">Task Master</h1>
 
     <div class="task-container">
-        <table class="task-table">
-            <tr>
-                <th>Task</th>
-                <th>Date and Time</th>
-                <th>Actions</th>
-            </tr>
+        {% if tasks %}
             {% for task in tasks %}
-                <tr>
-                    <td>{{ tasks[task]['Task'] }}</td>
-                    <td>{{ tasks[task]['Time'] }}</td>
-                    <td>
+                <div class="task-card">
+                    <div class="task-content">
+                        <div class="task-name">{{ tasks[task]['Task'] }}</div>
+                        <div class="task-time">{{ tasks[task]['Time'] }}</div>
+                    </div>
+                    <div class="task-actions">
+                        <a class="btn update" href="/update/{{task}}">Edit</a>
                         <a class="btn delete" href="/delete/{{task}}">Delete</a>
-                        <a class="btn update" href="/update/{{task}}">Update</a>
-                    </td>
-                </tr>
+                    </div>
+                </div>
             {% endfor %}
-        </table>
+        {% else %}
+            <div class="empty-state">
+                <p>No tasks yet. Add your first task below!</p>
+            </div>
+        {% endif %}
     </div>
 
     <form class="task-form" action="/" method="POST">
-        <input class="task-input" type="text" name="content" id="content" placeholder="Enter new task...">
+        <input class="task-input" type="text" name="content" id="content" placeholder="Enter new task..." required>
         <input class="btn add" type="submit" value="Add Task">
     </form>
 </div>
