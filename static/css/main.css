@@ -3,6 +3,7 @@
     --bg-color: #121212;
     --card-bg: #1e1e1e;
     --primary: #bb86fc;
+    --primary-glow: rgba(187, 134, 252, 0.50);
     --secondary: #03dac6;
     --danger: #cf6679;
     --text: #e0e0e0;
@@ -49,7 +50,7 @@
     margin-bottom: 30px;
   }
   
-  /* Task Card */
+  /* Task Card with Glow Effect */
   .task-card {
     background: rgba(255, 255, 255, 0.05);
     border-radius: 10px;
@@ -58,12 +59,13 @@
     justify-content: space-between;
     align-items: center;
     border-left: 4px solid var(--primary);
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.2s, box-shadow 0.3s;
+    box-shadow: 0 0 10px var(--primary-glow);
   }
   
   .task-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 20px var(--primary-glow), 0 5px 15px rgba(0, 0, 0, 0.3);
   }
   
   .task-content {
@@ -116,12 +118,17 @@
     color: #121212;
     font-weight: 600;
     padding: 10px 20px;
+    box-shadow: 0 0 10px var(--primary-glow);
   }
   
   .btn:hover {
     opacity: 0.9;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .add:hover {
+    box-shadow: 0 0 15px var(--primary-glow), 0 4px 8px rgba(0, 0, 0, 0.2);
   }
   
   /* Form Styling */
@@ -192,11 +199,22 @@
     font-weight: 600;
     cursor: pointer;
     transition: 0.3s;
+    box-shadow: 0 0 10px rgba(3, 218, 198, 0.15);
   }
   
   .content input[type="submit"]:hover {
     opacity: 0.9;
     transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(3, 218, 198, 0.25);
+  }
+  
+  /* Empty state styling */
+  .empty-state {
+    text-align: center;
+    padding: 30px;
+    color: var(--text-secondary);
+    border: 1px dashed var(--border);
+    border-radius: 10px;
   }
   
   /* Responsive design */
