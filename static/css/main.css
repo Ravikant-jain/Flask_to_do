@@ -3,12 +3,15 @@
     --bg-color: #121212;
     --card-bg: #1e1e1e;
     --primary: #bb86fc;
-    --primary-glow: rgba(187, 134, 252, 0.50);
+    --primary-glow: rgba(187, 134, 252, 0.40);
     --secondary: #03dac6;
     --danger: #cf6679;
     --text: #e0e0e0;
     --text-secondary: #a0a0a0;
     --border: #2d2d2d;
+    --scrollbar-track: #1e1e1e;
+    --scrollbar-thumb: #3d3d3d;
+    --scrollbar-thumb-hover: var(--primary);
   }
   
   body {
@@ -31,6 +34,9 @@
     padding: 30px;
     border-radius: 15px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    max-height: 80vh;
   }
   
   /* Title */
@@ -42,12 +48,37 @@
     text-align: center;
   }
   
-  /* Task Cards Container */
+  /* Task Cards Container with Scrolling */
   .task-container {
     display: flex;
     flex-direction: column;
     gap: 16px;
     margin-bottom: 30px;
+    overflow-y: auto;
+    max-height: 400px;
+    padding-right: 10px;
+    position: relative;
+    scroll-behavior: smooth;
+  }
+  
+  /* Custom Scrollbar */
+  .task-container::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .task-container::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+    border-radius: 10px;
+  }
+  
+  .task-container::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 10px;
+    transition: background 0.3s ease;
+  }
+  
+  .task-container::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
   }
   
   /* Task Card with Glow Effect */
@@ -61,11 +92,33 @@
     border-left: 4px solid var(--primary);
     transition: transform 0.2s, box-shadow 0.3s;
     box-shadow: 0 0 10px var(--primary-glow);
+    opacity: 0;
+    animation: fadeInUp 0.5s forwards;
   }
+  
+  /* Animation for cards on scroll */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Apply animation delay to cards for staggered effect */
+  .task-card:nth-child(1) { animation-delay: 0.1s; }
+  .task-card:nth-child(2) { animation-delay: 0.2s; }
+  .task-card:nth-child(3) { animation-delay: 0.3s; }
+  .task-card:nth-child(4) { animation-delay: 0.4s; }
+  .task-card:nth-child(5) { animation-delay: 0.5s; }
   
   .task-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 0 20px var(--primary-glow), 0 5px 15px rgba(0, 0, 0, 0.3);
+    z-index: 1;
   }
   
   .task-content {
@@ -90,6 +143,42 @@
     gap: 8px;
   }
   
+  /* Glowing indicator for scrollable content */
+  .scroll-indicator {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 4px;
+    background: var(--primary);
+    border-radius: 2px;
+    opacity: 0;
+    box-shadow: 0 0 10px var(--primary-glow);
+    animation: pulse 2s infinite;
+    transition: opacity 0.3s ease;
+  }
+  
+  @keyframes pulse {
+    0% {
+      opacity: 0.3;
+      width: 30px;
+    }
+    50% {
+      opacity: 1;
+      width: 50px;
+    }
+    100% {
+      opacity: 0.3;
+      width: 30px;
+    }
+  }
+  
+  /* Show scroll indicator when content is scrollable */
+  .task-container.scrollable .scroll-indicator {
+    opacity: 1;
+  }
+  
   /* Buttons */
   .btn {
     display: inline-block;
@@ -101,6 +190,28 @@
     transition: 0.3s;
     cursor: pointer;
     border: none;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    border-radius: 100%;
+    transform: scale(1, 1) translate(-50%);
+    transform-origin: 50% 50%;
+  }
+  
+  .btn:active::after {
+    opacity: 0.3;
+    transform: scale(20, 20) translate(-50%);
+    transition: all 0.5s, opacity 0.3s;
   }
   
   .delete {

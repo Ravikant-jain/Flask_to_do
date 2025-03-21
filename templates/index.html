@@ -8,7 +8,7 @@
 <div class="container">
     <h1 class="title">Task Master</h1>
 
-    <div class="task-container">
+    <div class="task-container" id="taskContainer">
         {% if tasks %}
             {% for task in tasks %}
                 <div class="task-card">
@@ -22,6 +22,7 @@
                     </div>
                 </div>
             {% endfor %}
+            <div class="scroll-indicator"></div>
         {% else %}
             <div class="empty-state">
                 <p>No tasks yet. Add your first task below!</p>
@@ -34,4 +35,88 @@
         <input class="btn add" type="submit" value="Add Task">
     </form>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const taskContainer = document.getElementById('taskContainer');
+        
+        // Check if content is scrollable
+        function checkScrollable() {
+            const isScrollable = taskContainer.scrollHeight > taskContainer.clientHeight;
+            if (isScrollable) {
+                taskContainer.classList.add('scrollable');
+            } else {
+                taskContainer.classList.remove('scrollable');
+            }
+        }
+        
+        // Run on load
+        checkScrollable();
+        
+        // Add scroll animation for new elements entering viewport
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        // Observe all task cards
+        document.querySelectorAll('.task-card').forEach(card => {
+            observer.observe(card);
+        });
+        
+        // Add futuristic ripple effect to scrollbar as user scrolls
+        taskContainer.addEventListener('scroll', function() {
+            const scrollPercentage = (taskContainer.scrollTop / (taskContainer.scrollHeight - taskContainer.clientHeight)) * 100;
+            const indicator = document.querySelector('.scroll-indicator');
+            
+            // Pulse animation based on scroll position
+            indicator.style.opacity = 1;
+            indicator.style.width = `${30 + (scrollPercentage / 5)}px`;
+            
+            // Create ripple effect
+            const ripple = document.createElement('div');
+            ripple.style.position = 'absolute';
+            ripple.style.width = '10px';
+            ripple.style.height = '10px';
+            ripple.style.backgroundColor = 'var(--primary)';
+            ripple.style.borderRadius = '50%';
+            ripple.style.left = `${scrollPercentage}%`;
+            ripple.style.top = '0';
+            ripple.style.transform = 'translateX(-50%)';
+            ripple.style.opacity = '0.7';
+            ripple.style.boxShadow = '0 0 8px var(--primary-glow)';
+            ripple.style.transition = 'all 0.5s ease';
+            
+            taskContainer.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.style.width = '5px';
+                ripple.style.height = '5px';
+                ripple.style.opacity = '0';
+            }, 10);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 500);
+        });
+        
+        // Auto-scroll animation for initial load
+        let initialScrollPos = 0;
+        const autoscrollInterval = setInterval(() => {
+            if (initialScrollPos < 100) {
+                taskContainer.scrollTop = initialScrollPos;
+                initialScrollPos += 2;
+            } else {
+                clearInterval(autoscrollInterval);
+                setTimeout(() => {
+                    taskContainer.scrollTop = 0;
+                }, 500);
+            }
+        }, 10);
+    });
+</script>
 {% endblock %}
